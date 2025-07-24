@@ -8,22 +8,27 @@ import { CircularProgress } from "@mui/material";
 
 export default function MovieDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  if (!id) {
+    navigate("/NotFoundPage", { replace: true });
+  }
 
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadMovieDetails() {
       setIsLoading(true);
-      try {
-        const movieDetails = await fetchMovieDetails(id);
-        setMovie(movieDetails);
-      } catch {
-        navigate("/NotFoundPage", { replace: true });
-      } finally {
-        setIsLoading(false);
-      }
+      if (!id) return;
+      fetchMovieDetails(id)
+        .then((movieDetails) => {
+          setMovie(movieDetails);
+        })
+        .catch(() => {})
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
 
     loadMovieDetails();
@@ -36,7 +41,13 @@ export default function MovieDetail() {
       </div>
     );
   }
-  if (!movie) return <p>Movie not Found</p>;
+
+  if (!movie)
+    return (
+      <p className="flex items-center justify-center min-h-screen">
+        Movie not Found
+      </p>
+    );
 
   const posterUrl = `https://image.tmdb.org/t/p/w342${movie.poster_path}`;
 

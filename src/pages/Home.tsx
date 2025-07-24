@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import type { Movie } from "../interface/Movie";
 import { fetchPopularMovies } from "../service/api.service";
 import { Link } from "react-router";
-import { useNavigate } from "react-router";
 import { CircularProgress } from "@mui/material";
 
 const baseUrl = "https://image.tmdb.org/t/p/w342";
@@ -10,7 +9,6 @@ const baseUrl = "https://image.tmdb.org/t/p/w342";
 function AllMovies() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadMovies() {
@@ -19,15 +17,13 @@ function AllMovies() {
       try {
         const fetchedMovies = await fetchPopularMovies();
         setMovies(fetchedMovies);
-      } catch {
-        navigate("/NotFoundPage", { replace: true });
       } finally {
         setIsLoading(false);
       }
     }
 
     loadMovies();
-  }, [navigate]);
+  }, []);
 
   if (isLoading) {
     return (

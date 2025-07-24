@@ -10,6 +10,9 @@ export const fetchPopularMovies = async (): Promise<Movie[]> => {
       headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
     }
   );
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
   const data = await response.json();
   return data.results;
 };
@@ -18,6 +21,8 @@ export const fetchMovieDetails = async (id: string): Promise<Movie> => {
   const response = await fetch(`${BASE_URL}/movie/${id}`, {
     headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
   });
-  const data = (await response.json()) as Movie;
-  return data;
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
+  return await response.json();
 };
